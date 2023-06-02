@@ -15,7 +15,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import static org.logdoc.fairhttp.utils.Utils.isEmpty;
+import static org.logdoc.helpers.Texts.isEmpty;
 
 /**
  * @author Denis Danilin | me@loslobos.ru

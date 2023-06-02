@@ -130,6 +130,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.logdoc</groupId>
+            <artifactId>code-helpers</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>[2.14.0,)</version>

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.logdoc.fairhttp.diag.CDBuilder;
 import org.logdoc.fairhttp.flow.FairResponse;
 import org.logdoc.fairhttp.flow.FairSocket;
-import org.logdoc.fairhttp.helpers.*;
+import org.logdoc.fairhttp.helpers.CookieKeeper;
+import org.logdoc.fairhttp.helpers.FairErrorHandler;
+import org.logdoc.fairhttp.helpers.SocketConsumer;
 import org.logdoc.fairhttp.structs.MimeType;
 import org.logdoc.fairhttp.structs.Point;
 import org.logdoc.fairhttp.structs.traits.ContentTypes;
@@ -38,7 +40,13 @@ import java.util.stream.Collectors;
 import static org.logdoc.fairhttp.structs.traits.Headers.*;
 import static org.logdoc.fairhttp.structs.websocket.protocol.IProtocol.RFC_KEY_UUID;
 import static org.logdoc.fairhttp.structs.websocket.protocol.IProtocol.WS_VERSION;
-import static org.logdoc.fairhttp.utils.Utils.*;
+import static org.logdoc.helpers.Bytes.copy;
+import static org.logdoc.helpers.Digits.getInt;
+import static org.logdoc.helpers.Inets.trustAllManager;
+import static org.logdoc.helpers.Sporadics.generateSeed;
+import static org.logdoc.helpers.Sporadics.getRnd;
+import static org.logdoc.helpers.Texts.isEmpty;
+import static org.logdoc.helpers.Texts.notNull;
 
 /**
  * @author Denis Danilin | me@loslobos.ru
@@ -46,6 +54,8 @@ import static org.logdoc.fairhttp.utils.Utils.*;
  * fairhttp ☭ sweat and blood
  */
 class FairBase {
+    private static final byte[] FEED = new byte[]{'\r', '\n'};
+
     final Map<String, String> headers = new HashMap<>();
     Supplier<byte[]> chunksWriter;
     Consumer<byte[]> chunkReader;
@@ -92,7 +102,7 @@ class FairBase {
 
             if (isEmpty(protocols)) protocols = Collections.singletonList(new Protocol(""));
 
-            final byte[] key = randomBytes(16);
+            final byte[] key = generateSeed(16);
 
             header(Upgrade, "websocket");
             header(Connection, Upgrade);
@@ -345,7 +355,7 @@ class FairBase {
             if (destination.schema == Schemas.https) {
                 if (allTrusted) {
                     final SSLContext sslContext = SSLContext.getInstance("SSL");
-                    sslContext.init(null, trustAllManager, rnd);
+                    sslContext.init(null, trustAllManager, getRnd());
                     ((HttpsURLConnection) huc).setSSLSocketFactory(sslContext.getSocketFactory());
                 }
 
@@ -454,6 +464,54 @@ class FairBase {
 
             payload = om.valueToTree(o).toString().getBytes(StandardCharsets.UTF_8);
         } catch (final Exception ignore) {
+        }
+    }
+
+    private byte[] readChunkBody(final int size, final InputStream is) throws IOException {
+        final byte[] body = new byte[size];
+
+        for (int i = 0; i < size; i++)
+            body[i] = (byte) is.read();
+
+        return body;
+    }
+
+    private String safeHeaderRecord(final String key, final String value) {
+        if (isEmpty(key) || isEmpty(value))
+            return "";
+
+        return key + ": " + value + "\r\n";
+    }
+
+    private String readHeaderLine(final InputStream is) throws IOException {
+        byte b, prev = -1;
+
+        try (final ByteArrayOutputStream os = new ByteArrayOutputStream(4096)) {
+            while ((b = (byte) is.read()) != -1) {
+                if (b == '\n' && prev == '\r')
+                    return new String(Arrays.copyOfRange(os.toByteArray(), 0, os.size() - 1), StandardCharsets.US_ASCII);
+
+                os.write(b);
+                prev = b;
+            }
+        }
+
+        return null;
+    }
+
+    private int readChunkLen(final InputStream is) throws IOException {
+        int b, prev = '0';
+
+        try (final ByteArrayOutputStream os = new ByteArrayOutputStream(8)) {
+            while ((b = is.read()) != '\n' || prev != '\r') {
+                if (b == '\n')
+                    os.reset();
+                else if (Character.digit(b, 16) != -1)
+                    os.write(b);
+                prev = b;
+            }
+
+            return Integer.parseInt(os.toString(StandardCharsets.US_ASCII), 16);
         }
     }
 

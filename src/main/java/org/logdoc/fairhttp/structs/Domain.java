@@ -2,7 +2,9 @@ package org.logdoc.fairhttp.structs;
 
 import java.util.Objects;
 
-import static org.logdoc.fairhttp.utils.Utils.*;
+import static org.logdoc.helpers.Inets.isIPv4LiteralAddress;
+import static org.logdoc.helpers.Inets.isIPv6LiteralAddress;
+import static org.logdoc.helpers.Texts.isEmpty;
 
 /**
  * @author Denis Danilin | me@loslobos.ru

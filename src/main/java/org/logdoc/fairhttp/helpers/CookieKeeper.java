@@ -1,7 +1,7 @@
 package org.logdoc.fairhttp.helpers;
 
 import org.logdoc.fairhttp.structs.traits.Headers;
-import org.logdoc.fairhttp.utils.Utils;
+import org.logdoc.helpers.Digits;
 
 import java.net.HttpCookie;
 import java.net.URLConnection;
@@ -13,7 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.logdoc.fairhttp.utils.Utils.*;
+import static org.logdoc.helpers.Texts.isEmpty;
+import static org.logdoc.helpers.Texts.notNull;
 
 /**
  * @author Denis Danilin | me@loslobos.ru
@@ -45,7 +46,7 @@ public class CookieKeeper {
                         !c.hasExpired()
                                 && (isEmpty(c.getDomain()) || HttpCookie.domainMatches(c.getDomain(), host))
                                 && (isEmpty(c.getPath()) || path.startsWith(c.getPath()))
-                                && (isEmpty(c.getPortlist()) || Arrays.stream(c.getPortlist().split(coma)).map(Utils::getInt).collect(Collectors.toSet()).contains(port))
+                                && (isEmpty(c.getPortlist()) || Arrays.stream(c.getPortlist().split(coma)).map(Digits::getInt).collect(Collectors.toSet()).contains(port))
                 )
                 .map(c -> c.getName() + "=" + c.getValue())
                 .collect(Collectors.joining(";"));

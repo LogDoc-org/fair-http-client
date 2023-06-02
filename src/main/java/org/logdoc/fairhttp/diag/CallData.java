@@ -8,9 +8,10 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static org.logdoc.fairhttp.utils.Utils.isEmpty;
-import static org.logdoc.fairhttp.utils.Utils.quote;
+import static org.logdoc.helpers.Texts.isEmpty;
 
 /**
  * @author Denis Danilin | me@loslobos.ru
@@ -18,6 +19,8 @@ import static org.logdoc.fairhttp.utils.Utils.quote;
  * fairhttp ☭ sweat and blood
  */
 public class CallData {
+    private static final Pattern SINGLE_QUOTE_REPLACE = Pattern.compile("'", Pattern.LITERAL);
+
     public final long id = System.nanoTime();
     public final long requestStarted, requestWritten, responseStarted, responseRead, finita;
     public final Request request;
@@ -175,5 +178,9 @@ public class CallData {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    private static String quote(String unsafe) {
+        return SINGLE_QUOTE_REPLACE.matcher(unsafe).replaceAll(Matcher.quoteReplacement("'\\''"));
     }
 }

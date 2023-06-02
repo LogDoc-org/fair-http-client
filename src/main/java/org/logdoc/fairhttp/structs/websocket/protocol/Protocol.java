@@ -27,7 +27,8 @@ package org.logdoc.fairhttp.structs.websocket.protocol;
 
 import java.util.regex.Pattern;
 
-import static org.logdoc.fairhttp.utils.Utils.isEmpty;
+import static org.logdoc.helpers.Texts.isEmpty;
+
 
 public class Protocol implements IProtocol {
     private static final Pattern patternSpace = Pattern.compile(" "), patternComma = Pattern.compile(",");

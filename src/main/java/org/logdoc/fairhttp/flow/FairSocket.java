@@ -35,8 +35,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.logdoc.fairhttp.helpers.FairErrorHandler.NotificationLevel.*;
-import static org.logdoc.fairhttp.utils.Utils.byteInt;
-import static org.logdoc.fairhttp.utils.Utils.rnd;
+import static org.logdoc.helpers.BinFlows.asBytes;
+import static org.logdoc.helpers.Sporadics.nextInt;
 
 /**
  * @author Denis Danilin | me@loslobos.ru
@@ -259,7 +259,7 @@ public class FairSocket implements Runnable {
                         } else
                             throw new IllegalStateException("Size representation not supported/specified");
 
-                        final byte[] maskkey = byteInt(rnd.nextInt());
+                        final byte[] maskkey = asBytes(nextInt());
 
                         for (int i = 0; i < mes.length; i++)
                             os.write((byte) (mes[i] ^ maskkey[i % 4]));

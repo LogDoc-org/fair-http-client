@@ -11,8 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.logdoc.fairhttp.utils.Utils.copy;
-import static org.logdoc.fairhttp.utils.Utils.xml2StringBytes;
+import static org.logdoc.helpers.Bytes.copy;
+import static org.logdoc.helpers.Xmls.xml2StringBytes;
 
 /**
  * @author Denis Danilin | me@loslobos.ru
