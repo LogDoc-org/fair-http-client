@@ -2,7 +2,8 @@ package org.logdoc.fairhttp.structs.websocket.frames;
 
 import org.logdoc.fairhttp.structs.websocket.Opcode;
 
-import static org.logdoc.fairhttp.helpers.Utils.isValidUTF8;
+import static org.logdoc.fairhttp.utils.Utils.isValidUTF8;
+
 
 public class TextFrame extends DataFrame {
 

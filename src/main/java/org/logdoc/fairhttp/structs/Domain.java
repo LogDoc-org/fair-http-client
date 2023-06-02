@@ -2,7 +2,7 @@ package org.logdoc.fairhttp.structs;
 
 import java.util.Objects;
 
-import static org.logdoc.fairhttp.helpers.Utils.*;
+import static org.logdoc.fairhttp.utils.Utils.*;
 
 /**
  * @author Denis Danilin | me@loslobos.ru

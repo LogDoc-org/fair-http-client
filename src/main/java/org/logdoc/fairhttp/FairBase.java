@@ -35,10 +35,10 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static org.logdoc.fairhttp.helpers.Utils.*;
 import static org.logdoc.fairhttp.structs.traits.Headers.*;
 import static org.logdoc.fairhttp.structs.websocket.protocol.IProtocol.RFC_KEY_UUID;
 import static org.logdoc.fairhttp.structs.websocket.protocol.IProtocol.WS_VERSION;
+import static org.logdoc.fairhttp.utils.Utils.*;
 
 /**
  * @author Denis Danilin | me@loslobos.ru
@@ -345,7 +345,7 @@ class FairBase {
             if (destination.schema == Schemas.https) {
                 if (allTrusted) {
                     final SSLContext sslContext = SSLContext.getInstance("SSL");
-                    sslContext.init(null, trustAllManager, Utils.rnd);
+                    sslContext.init(null, trustAllManager, rnd);
                     ((HttpsURLConnection) huc).setSSLSocketFactory(sslContext.getSocketFactory());
                 }
 
@@ -426,7 +426,7 @@ class FairBase {
                     try (final InputStream is = huc.getInputStream(); final ByteArrayOutputStream bos = new ByteArrayOutputStream(1024 * 64)) {
                         if (len > 0) for (long i = 0; i < len; i++)
                             bos.write(is.read());
-                        else Utils.copy(is, bos);
+                        else copy(is, bos);
 
                         bos.flush();
                         result.body = bos.toByteArray();

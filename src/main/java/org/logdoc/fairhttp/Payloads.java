@@ -3,7 +3,6 @@ package org.logdoc.fairhttp;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.logdoc.fairhttp.structs.traits.ContentTypes;
 import org.logdoc.fairhttp.structs.traits.Headers;
-import org.logdoc.fairhttp.helpers.Utils;
 import org.w3c.dom.Document;
 
 import java.io.ByteArrayOutputStream;
@@ -11,6 +10,9 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import static org.logdoc.fairhttp.utils.Utils.copy;
+import static org.logdoc.fairhttp.utils.Utils.xml2StringBytes;
 
 /**
  * @author Denis Danilin | me@loslobos.ru
@@ -34,7 +36,7 @@ abstract class Payloads {
         header(Headers.ContentType, ContentTypes.xml.toString());
 
         if (xml != null)
-            this.payload(Utils.xml2StringBytes(xml));
+            this.payload(xml2StringBytes(xml));
     }
 
     void fromStream(final InputStream stream) {
@@ -42,7 +44,7 @@ abstract class Payloads {
 
         if (stream != null)
             try (final ByteArrayOutputStream os = new ByteArrayOutputStream(1024 * 16)) {
-                Utils.copy(stream, os);
+                copy(stream, os);
                 os.flush();
 
                 this.payload(os.toByteArray());

@@ -23,7 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Supplier;
 
-import static org.logdoc.fairhttp.helpers.Utils.*;
+import static org.logdoc.fairhttp.utils.Utils.*;
 
 /**
  * @author Denis Danilin | me@loslobos.ru

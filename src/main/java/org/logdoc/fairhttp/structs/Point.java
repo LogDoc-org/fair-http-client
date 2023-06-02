@@ -5,8 +5,8 @@ import org.logdoc.fairhttp.structs.traits.Schemas;
 import java.net.URI;
 import java.net.URL;
 
-import static org.logdoc.fairhttp.helpers.Utils.isEmpty;
-import static org.logdoc.fairhttp.helpers.Utils.notNull;
+import static org.logdoc.fairhttp.utils.Utils.isEmpty;
+import static org.logdoc.fairhttp.utils.Utils.notNull;
 
 /**
  * @author Denis Danilin | me@loslobos.ru

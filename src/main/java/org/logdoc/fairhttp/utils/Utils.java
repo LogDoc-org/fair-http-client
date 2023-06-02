@@ -3,6 +3,8 @@ package org.logdoc.fairhttp.utils;
 import org.logdoc.fairhttp.structs.traits.ContentTypes;
 import org.w3c.dom.Node;
 
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -14,9 +16,12 @@ import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Denis Danilin | me@loslobos.ru
@@ -25,6 +30,24 @@ import java.util.Map;
  */
 public class Utils {
     public static final SecureRandom rnd = new SecureRandom();
+    public static final byte[] FEED = new byte[]{'\r', '\n'};
+
+    private static final Pattern SINGLE_QUOTE_REPLACE = Pattern.compile("'", Pattern.LITERAL);
+
+    public static final TrustManager[] trustAllManager = new TrustManager[]{new X509TrustManager() {
+        @Override
+        public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
+        }
+
+        @Override
+        public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return null;
+        }
+    }};
 
     static {
         rnd.setSeed(System.currentTimeMillis());
@@ -42,7 +65,7 @@ public class Utils {
 
     public static String urlEnc(final String s) {
         try {
-            return URLEncoder.encode(s, "UTF-8");
+            return URLEncoder.encode(s, StandardCharsets.UTF_8);
         } catch (final Exception ignore) {
         }
 
@@ -497,5 +520,59 @@ public class Utils {
             return c - 'a' + 10;
 
         return digit(c, DECIMAL);
+    }
+
+    public static String quote(String unsafe) {
+        return SINGLE_QUOTE_REPLACE.matcher(unsafe).replaceAll(Matcher.quoteReplacement("'\\''"));
+    }
+
+    public static int getInt(Object parameter, int max, int min) {
+        int i = getInt(parameter);
+        return i > max ? max : Math.max(i, min);
+    }
+
+    public static int getInt(Object parameter) {
+        String param = notNull(parameter);
+
+        try {
+            return Integer.decode(param);
+        } catch (Exception var5) {
+            try {
+                return Integer.parseInt(param.replaceAll("([^0-9-])", ""));
+            } catch (Exception var4) {
+                return 0;
+            }
+        }
+    }
+
+    public static byte[] xml2StringBytes(final Node doc) {
+        try { return toStringUnsafe(doc).getBytes(StandardCharsets.UTF_8); } catch (final Exception ignore) { }
+
+        return null;
+    }
+
+    public static byte[] readChunkBody(final int size, final InputStream is) throws IOException {
+        final byte[] body = new byte[size];
+
+        for (int i = 0; i < size; i++)
+            body[i] = (byte) is.read();
+
+        return body;
+    }
+
+    public static int readChunkLen(final InputStream is) throws IOException {
+        int b, prev = '0';
+
+        try (final ByteArrayOutputStream os = new ByteArrayOutputStream(8)) {
+            while ((b = is.read()) != '\n' || prev != '\r') {
+                if (b == '\n')
+                    os.reset();
+                else if (Character.digit(b, 16) != -1)
+                    os.write(b);
+                prev = b;
+            }
+
+            return Integer.parseInt(os.toString(StandardCharsets.US_ASCII), 16);
+        }
     }
 }

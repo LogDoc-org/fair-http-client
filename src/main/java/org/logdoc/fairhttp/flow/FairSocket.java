@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.logdoc.fairhttp.diag.CallData;
 import org.logdoc.fairhttp.helpers.FairErrorHandler;
 import org.logdoc.fairhttp.helpers.SocketConsumer;
-import org.logdoc.fairhttp.helpers.Utils;
 import org.logdoc.fairhttp.structs.SocketMessage;
 import org.logdoc.fairhttp.structs.websocket.Opcode;
 import org.logdoc.fairhttp.structs.websocket.extension.DefaultExtension;
@@ -36,7 +35,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.logdoc.fairhttp.helpers.FairErrorHandler.NotificationLevel.*;
-import static org.logdoc.fairhttp.helpers.Utils.byteInt;
+import static org.logdoc.fairhttp.utils.Utils.byteInt;
+import static org.logdoc.fairhttp.utils.Utils.rnd;
 
 /**
  * @author Denis Danilin | me@loslobos.ru
@@ -259,7 +259,7 @@ public class FairSocket implements Runnable {
                         } else
                             throw new IllegalStateException("Size representation not supported/specified");
 
-                        final byte[] maskkey = byteInt(Utils.rnd.nextInt());
+                        final byte[] maskkey = byteInt(rnd.nextInt());
 
                         for (int i = 0; i < mes.length; i++)
                             os.write((byte) (mes[i] ^ maskkey[i % 4]));

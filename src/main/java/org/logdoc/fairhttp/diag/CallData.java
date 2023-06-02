@@ -9,8 +9,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.logdoc.fairhttp.helpers.Utils.isEmpty;
-import static org.logdoc.fairhttp.helpers.Utils.quote;
+import static org.logdoc.fairhttp.utils.Utils.isEmpty;
+import static org.logdoc.fairhttp.utils.Utils.quote;
 
 /**
  * @author Denis Danilin | me@loslobos.ru

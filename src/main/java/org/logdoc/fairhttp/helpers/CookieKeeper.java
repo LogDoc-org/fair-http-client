@@ -1,6 +1,7 @@
 package org.logdoc.fairhttp.helpers;
 
 import org.logdoc.fairhttp.structs.traits.Headers;
+import org.logdoc.fairhttp.utils.Utils;
 
 import java.net.HttpCookie;
 import java.net.URLConnection;
@@ -12,8 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static org.logdoc.fairhttp.helpers.Utils.isEmpty;
-import static org.logdoc.fairhttp.helpers.Utils.notNull;
+import static org.logdoc.fairhttp.utils.Utils.*;
 
 /**
  * @author Denis Danilin | me@loslobos.ru
