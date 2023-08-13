@@ -410,11 +410,13 @@ class FairBase {
             long read = 0;
             final boolean chunked = notNull(huc.getContentEncoding()).equalsIgnoreCase("chunked");
 
-            if (!errorHandler.isError(result.code) && !skipReply) {
-                if (chunked) {
-                    int chunkLen;
+            final InputStream is = result.code >= 400 ? huc.getErrorStream() : huc.getInputStream();
 
-                    try (final InputStream is = huc.getInputStream(); final ByteArrayOutputStream bos = new ByteArrayOutputStream(1024 * 64)) {
+            if (!skipReply)
+                try (final ByteArrayOutputStream bos = new ByteArrayOutputStream(1024 * 64)) {
+                    if (chunked) {
+                        int chunkLen;
+
                         if (chunkReader != null) {
                             while ((chunkLen = readChunkLen(is)) > 0) {
                                 chunkReader.accept(readChunkBody(chunkLen, is));
@@ -429,11 +431,9 @@ class FairBase {
                             result.body = bos.toByteArray();
                             read = result.body.length;
                         }
-                    }
-                } else {
-                    final long len = huc.getContentLengthLong();
+                    } else {
+                        final long len = huc.getContentLengthLong();
 
-                    try (final InputStream is = huc.getInputStream(); final ByteArrayOutputStream bos = new ByteArrayOutputStream(1024 * 64)) {
                         if (len > 0) for (long i = 0; i < len; i++)
                             bos.write(is.read());
                         else copy(is, bos);
@@ -443,7 +443,6 @@ class FairBase {
                         read = result.body.length;
                     }
                 }
-            }
 
             builder.responseDone(read, result.body, result.headers, chunked);
         } catch (final Exception e) {
