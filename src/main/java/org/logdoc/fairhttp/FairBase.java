@@ -7,9 +7,7 @@ import org.logdoc.fairhttp.flow.FairSocket;
 import org.logdoc.fairhttp.helpers.CookieKeeper;
 import org.logdoc.fairhttp.helpers.FairErrorHandler;
 import org.logdoc.fairhttp.helpers.SocketConsumer;
-import org.logdoc.fairhttp.structs.MimeType;
 import org.logdoc.fairhttp.structs.Point;
-import org.logdoc.fairhttp.structs.traits.ContentTypes;
 import org.logdoc.fairhttp.structs.traits.Headers;
 import org.logdoc.fairhttp.structs.traits.Methods;
 import org.logdoc.fairhttp.structs.traits.Schemas;
@@ -17,6 +15,8 @@ import org.logdoc.fairhttp.structs.websocket.extension.DefaultExtension;
 import org.logdoc.fairhttp.structs.websocket.extension.IExtension;
 import org.logdoc.fairhttp.structs.websocket.protocol.IProtocol;
 import org.logdoc.fairhttp.structs.websocket.protocol.Protocol;
+import org.logdoc.helpers.std.MimeType;
+import org.logdoc.helpers.std.MimeTypes;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -47,6 +47,8 @@ import static org.logdoc.helpers.Sporadics.generateSeed;
 import static org.logdoc.helpers.Sporadics.getRnd;
 import static org.logdoc.helpers.Texts.isEmpty;
 import static org.logdoc.helpers.Texts.notNull;
+import static org.logdoc.helpers.std.MimeTypes.BINARY;
+import static org.logdoc.helpers.std.MimeTypes.JSON;
 
 /**
  * @author Denis Danilin | me@loslobos.ru
@@ -161,7 +163,7 @@ class FairBase {
                 throw new IllegalStateException("Invalid status line received: " + firstLineTokens[0] + " Status line: " + line);
 
             line = readHeaderLine(is);
-            while (line != null && line.length() > 0) {
+            while (line != null && !line.isEmpty()) {
                 String[] pair = line.split(":", 2);
                 if (pair.length != 2) throw new IllegalStateException("not an http header");
 
@@ -206,9 +208,9 @@ class FairBase {
         if (destination.schema != Schemas.https && destination.schema != Schemas.http)
             throw new IllegalArgumentException("Unknown call protocol");
 
-        if (ContentTypes.multi.toString().equals(headers.get(Headers.ContentType)) && !isEmpty(multiParts)) {
+        if (MimeTypes.MULTIPART.toString().equals(headers.get(Headers.ContentType)) && !isEmpty(multiParts)) {
             final String boundary = "===" + System.currentTimeMillis() + "===";
-            contentType(ContentTypes.multi + "; boundary=" + boundary);
+            contentType(MimeTypes.MULTIPART + "; boundary=" + boundary);
 
             try (final ByteArrayOutputStream os = new ByteArrayOutputStream(1024 * 128)) {
                 for (final MultiPart p : multiParts) {
@@ -240,7 +242,7 @@ class FairBase {
 
         if (chunksWriter != null) header(Headers.TransferEncoding, "chunked");
         else {
-            if (headers.get(ContentType) == null) contentType(ContentTypes.binary);
+            if (headers.get(ContentType) == null) contentType(BINARY);
 
             header(Headers.ContentLength, String.valueOf(payload == null ? 0 : payload.length));
         }
@@ -261,7 +263,7 @@ class FairBase {
     }
 
     void withChunksWriter(final Supplier<byte[]> chunksWriter) {
-        contentType(ContentTypes.binary);
+        contentType(BINARY);
         header(Headers.TransferEncoding, "chunked");
 
         this.chunksWriter = chunksWriter;
@@ -456,7 +458,7 @@ class FairBase {
     }
 
     void payloadAsJson(final Object o) {
-        contentType(ContentTypes.json);
+        contentType(JSON);
 
         if (o != null) try {
             if (om == null) om = new ObjectMapper();

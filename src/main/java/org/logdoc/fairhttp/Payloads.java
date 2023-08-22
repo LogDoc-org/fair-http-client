@@ -13,6 +13,7 @@ import java.nio.file.Path;
 
 import static org.logdoc.helpers.Bytes.copy;
 import static org.logdoc.helpers.Xmls.xml2StringBytes;
+import static org.logdoc.helpers.std.MimeTypes.Signs.*;
 
 /**
  * @author Denis Danilin | me@loslobos.ru
@@ -21,26 +22,26 @@ import static org.logdoc.helpers.Xmls.xml2StringBytes;
  */
 abstract class Payloads {
     void json(JsonNode json) {
-        header(Headers.ContentType, ContentTypes.json.toString());
+        header(Headers.ContentType, Json);
 
         if (json != null) this.payload(json.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     void chars(String text) {
-        header(Headers.ContentType, ContentTypes.textPlain.toString());
+        header(Headers.ContentType, Txt);
 
         if (text != null) this.payload(text.getBytes(StandardCharsets.UTF_8));
     }
 
     void xml(final Document xml) {
-        header(Headers.ContentType, ContentTypes.xml.toString());
+        header(Headers.ContentType, Xml);
 
         if (xml != null)
             this.payload(xml2StringBytes(xml));
     }
 
     void fromStream(final InputStream stream) {
-        header(Headers.ContentType, ContentTypes.binary.toString());
+        header(Headers.ContentType, Bin);
 
         if (stream != null)
             try (final ByteArrayOutputStream os = new ByteArrayOutputStream(1024 * 16)) {
@@ -53,13 +54,13 @@ abstract class Payloads {
     }
 
     void bytes(byte[] data) {
-        header(Headers.ContentType, ContentTypes.binary.toString());
+        header(Headers.ContentType, Bin);
 
         if (data != null) this.payload(data);
     }
 
     void fileBytes(final Path file) {
-        header(Headers.ContentType, ContentTypes.binary.toString());
+        header(Headers.ContentType, Bin);
 
         if (file != null && Files.exists(file))
             try {

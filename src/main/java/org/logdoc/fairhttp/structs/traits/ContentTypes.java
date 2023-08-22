@@ -1,7 +1,9 @@
 package org.logdoc.fairhttp.structs.traits;
 
 
-import org.logdoc.fairhttp.structs.MimeType;
+import org.logdoc.helpers.std.MimeType;
+
+import static org.logdoc.helpers.std.MimeTypes.BINARY;
 
 /**
  * @author Denis Danilin | me@loslobos.ru
@@ -15,14 +17,6 @@ public interface ContentTypes {
         } catch (final Exception ignore) {
         }
 
-        return binary;
+        return BINARY;
     }
-
-    MimeType textPlain = asm("text/plain"),
-            textHtml = asm("text/html"),
-            json = asm("application/json"),
-            binary = asm("application/octet-stream"),
-            xml = asm("application/xml"),
-            form = asm("application/x-www-form-urlencoded"),
-            multi = asm("multipart/form-data");
 }

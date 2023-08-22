@@ -3,12 +3,12 @@ package org.logdoc.fairhttp;
 import org.logdoc.fairhttp.helpers.FairErrorHandler;
 import org.logdoc.fairhttp.flow.FairResponse;
 import org.logdoc.fairhttp.flow.FairSocket;
-import org.logdoc.fairhttp.structs.MimeType;
 import org.logdoc.fairhttp.structs.Point;
 import org.logdoc.fairhttp.helpers.SocketConsumer;
 import org.logdoc.fairhttp.structs.traits.Methods;
 import org.logdoc.fairhttp.structs.websocket.extension.IExtension;
 import org.logdoc.fairhttp.structs.websocket.protocol.IProtocol;
+import org.logdoc.helpers.std.MimeType;
 
 import java.net.Proxy;
 import java.util.Collection;

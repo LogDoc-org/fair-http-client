@@ -3,15 +3,15 @@ package org.logdoc.fairhttp;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.logdoc.fairhttp.flow.FairResponse;
 import org.logdoc.fairhttp.flow.FairSocket;
-import org.logdoc.fairhttp.structs.MimeType;
 import org.logdoc.fairhttp.helpers.SocketConsumer;
-import org.logdoc.fairhttp.structs.traits.ContentTypes;
 import org.logdoc.fairhttp.structs.traits.Headers;
 import org.logdoc.fairhttp.structs.traits.Methods;
 import org.logdoc.fairhttp.structs.websocket.extension.DefaultExtension;
 import org.logdoc.fairhttp.structs.websocket.extension.IExtension;
 import org.logdoc.fairhttp.structs.websocket.protocol.IProtocol;
 import org.logdoc.fairhttp.structs.websocket.protocol.Protocol;
+import org.logdoc.helpers.std.MimeType;
+import org.logdoc.helpers.std.MimeTypes;
 import org.w3c.dom.Document;
 
 import java.io.InputStream;
@@ -25,6 +25,9 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
 
 import static org.logdoc.helpers.Texts.*;
+import static org.logdoc.helpers.std.MimeTypes.BINARY;
+import static org.logdoc.helpers.std.MimeTypes.Signs.Multiform;
+import static org.logdoc.helpers.std.MimeTypes.TEXTPLAIN;
 
 /**
  * @author Denis Danilin | me@loslobos.ru
@@ -37,7 +40,7 @@ public interface FutureSugar {
     }
 
     default FairFuture form(final String fieldName, final Object content) {
-        header(Headers.ContentType, ContentTypes.form.toString());
+        header(Headers.ContentType, MimeTypes.Signs.HttpForm);
 
         if (noneEmpty(fieldName, content))
             return ((FairFuture) this).payloadAppend((notNull(fieldName) + "=" + notNull(content)).getBytes(StandardCharsets.UTF_8));
@@ -46,19 +49,19 @@ public interface FutureSugar {
     }
 
     default FairFuture multipart(final String fieldName, final String content) {
-        header(Headers.ContentType, ContentTypes.multi.toString());
+        header(Headers.ContentType, Multiform);
 
         if (noneEmpty(fieldName, content))
-            return multipart(null, fieldName, ContentTypes.textPlain, content.getBytes(StandardCharsets.UTF_8));
+            return multipart(null, fieldName, TEXTPLAIN, content.getBytes(StandardCharsets.UTF_8));
 
         return (FairFuture) this;
     }
 
     default FairFuture multipart(final String fieldName, final Path file) {
-        header(Headers.ContentType, ContentTypes.multi.toString());
+        header(Headers.ContentType, Multiform);
 
         if (!isEmpty(fieldName) && file != null && Files.exists(file)) try {
-            return multipart(file.getFileName().toString(), fieldName, ContentTypes.binary, Files.readAllBytes(file));
+            return multipart(file.getFileName().toString(), fieldName, BINARY, Files.readAllBytes(file));
         } catch (final Exception ignore) {
         }
 

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.logdoc.fairhttp.diag.CallData;
-import org.logdoc.fairhttp.structs.MimeType;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
