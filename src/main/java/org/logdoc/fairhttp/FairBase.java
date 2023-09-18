@@ -208,18 +208,20 @@ class FairBase {
         if (destination.schema != Schemas.https && destination.schema != Schemas.http)
             throw new IllegalArgumentException("Unknown call protocol");
 
-        if (MimeTypes.MULTIPART.toString().equals(headers.get(Headers.ContentType)) && !isEmpty(multiParts)) {
+        if (!isEmpty(multiParts)) {
             final String boundary = "===" + System.currentTimeMillis() + "===";
             contentType(MimeTypes.MULTIPART + "; boundary=" + boundary);
 
             try (final ByteArrayOutputStream os = new ByteArrayOutputStream(1024 * 128)) {
                 for (final MultiPart p : multiParts) {
                     os.write(FEED);
-                    os.write(("--" + boundary).getBytes(StandardCharsets.UTF_8));
+                    os.write(("--" + boundary).getBytes(StandardCharsets.ISO_8859_1));
                     os.write(FEED);
-                    os.write((Headers.ContentDisposition + ":form-data;charset=UTF-8;name=\"" + p.partName + "\";" + (isEmpty(p.fileName) ? "" : ";filename=\"" + p.fileName + "\"")).getBytes(StandardCharsets.UTF_8));
+                    os.write((Headers.ContentDisposition + ":form-data;charset=UTF-8;name=\"" + p.partName + "\";" + (isEmpty(p.fileName) ? "" : "filename=\"" + p.fileName + "\"")).getBytes(StandardCharsets.UTF_8));
                     os.write(FEED);
                     os.write((Headers.ContentType + ": " + p.partContentType.toString()).getBytes());
+                    os.write(FEED);
+                    os.write((ContentLength + ": " + p.part.length).getBytes());
                     os.write(FEED);
                     os.write((Headers.TransferEncoding + ": binary").getBytes());
                     os.write(FEED);
