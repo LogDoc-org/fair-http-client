@@ -15,6 +15,7 @@ import org.logdoc.helpers.std.MimeTypes;
 import org.w3c.dom.Document;
 
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,7 +44,7 @@ public interface FutureSugar {
         header(Headers.ContentType, MimeTypes.Signs.HttpForm);
 
         if (noneEmpty(fieldName, content))
-            return ((FairFuture) this).payloadAppend((notNull(fieldName) + "=" + notNull(content)).getBytes(StandardCharsets.UTF_8));
+            return ((FairFuture) this).payloadAppend((notNull(fieldName) + "=" + URLEncoder.encode(notNull(content), StandardCharsets.UTF_8)).getBytes(StandardCharsets.UTF_8));
 
         return (FairFuture) this;
     }
