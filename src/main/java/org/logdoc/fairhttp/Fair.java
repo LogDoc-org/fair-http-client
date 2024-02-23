@@ -1,6 +1,7 @@
 package org.logdoc.fairhttp;
 
 import org.logdoc.fairhttp.diag.CallData;
+import org.logdoc.fairhttp.flow.FairResponse;
 import org.logdoc.fairhttp.helpers.CookieKeeper;
 import org.logdoc.fairhttp.helpers.FairErrorHandler;
 import org.logdoc.fairhttp.structs.Point;
@@ -26,6 +27,7 @@ public final class Fair {
     public enum Option {FOLLOW_REDIRECTS, SSL_TRUST_ALL_CERTS, SSL_DO_NOT_VERIFY_HOSTNAME, SKIP_RESPONSE}
 
     static final AtomicReference<Consumer<String>> callTracer = new AtomicReference<>(null);
+    static final AtomicReference<Consumer<FairResponse>> replyVerificator = new AtomicReference<>(null);
     static final CookieKeeper commonKeeper = new CookieKeeper();
     static final Map<String, String> commonHeaders = new HashMap<>(0);
     static final AtomicReference<Proxy> commonProxy = new AtomicReference<>(Proxy.NO_PROXY);
@@ -131,5 +133,9 @@ public final class Fair {
 
     public static void eachCallTraceConsumer(final Consumer<String> traceConsumer) {
         callTracer.set(traceConsumer);
+    }
+
+    public static void setReplyVerificator(final Consumer<FairResponse> verificator) {
+        replyVerificator.set(verificator);
     }
 }

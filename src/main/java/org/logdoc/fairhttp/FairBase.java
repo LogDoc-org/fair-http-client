@@ -454,8 +454,13 @@ class FairBase {
         }
 
         result.callData = builder.data();
+
+        if (Fair.replyVerificator.get() != null)
+            Fair.replyVerificator.get().accept(result);
+
         if (Fair.callTracer.get() != null)
             Fair.callTracer.get().accept(result.callData.trace());
+
         return result;
     }
 
