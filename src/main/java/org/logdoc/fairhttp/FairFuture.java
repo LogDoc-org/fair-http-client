@@ -31,7 +31,7 @@ public class FairFuture extends Payloads implements FutureSugar {
         base = new FairBase(destination);
     }
 
-    public FairFuture(final FairBase base) {
+    FairFuture(final FairBase base) {
         this.base = base;
     }
 
@@ -116,7 +116,6 @@ public class FairFuture extends Payloads implements FutureSugar {
 
         return this;
     }
-
 
     public CompletionStage<FairResponse> postAsJson(final Object o) {
         base.payloadAsJson(o);

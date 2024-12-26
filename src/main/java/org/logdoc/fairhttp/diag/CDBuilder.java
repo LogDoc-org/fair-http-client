@@ -38,9 +38,7 @@ public class CDBuilder {
     }
 
     public static CDBuilder start(final String url, final String method, final Map<String, String> headers, final byte[] payload, final boolean chunkedInput) {
-        final CDBuilder builder = new CDBuilder();
-        builder.url = url;
-        builder.method = method;
+        final CDBuilder builder = start(url, method);
         builder.headers = new HashMap<>(headers);
         builder.payload = payload;
         builder.chunkedInput = chunkedInput;

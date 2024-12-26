@@ -22,14 +22,13 @@ import java.util.function.Supplier;
  * fairhttp ☭ sweat and blood
  */
 public class FairCall extends Payloads implements CallSugar {
-
     private final FairBase base;
 
     FairCall(final Point destination) {
         base = new FairBase(destination);
     }
 
-    public FairCall(final FairBase base) {
+    FairCall(final FairBase base) {
         this.base = base;
     }
 
