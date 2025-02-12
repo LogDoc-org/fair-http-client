@@ -28,10 +28,9 @@ public class CookieKeeper {
         String headerName;
 
         for (int i = 1; (headerName = connection.getHeaderFieldKey(i)) != null; i++)
-            if (headerName.equalsIgnoreCase(Headers.GetCookies)) {
+            if (headerName.equalsIgnoreCase(Headers.GetCookies))
                 save(notNull(connection.getHeaderField(i)));
-                break;
-            }
+//                break;
     }
 
     public void save(final String cookieHeader) {
