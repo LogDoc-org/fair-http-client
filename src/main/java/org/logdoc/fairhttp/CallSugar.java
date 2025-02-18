@@ -73,13 +73,13 @@ public interface CallSugar {
     }
 
     default FairCall basicAuth(final String login, final String password) {
-        header(Headers.Auth, login == null ? null : Base64.getEncoder().encodeToString((notNull(login) + ":" + notNull(password)).getBytes(StandardCharsets.UTF_8)));
+        header(Headers.Auth, login == null ? null : "Basic " + Base64.getEncoder().encodeToString((notNull(login) + ":" + notNull(password)).getBytes(StandardCharsets.UTF_8)));
 
         return (FairCall) this;
     }
 
     default FairCall basicAuth(final String encodedAuthPayload) {
-        header(Headers.Auth, isEmpty(encodedAuthPayload) ? null : encodedAuthPayload);
+        header(Headers.Auth, isEmpty(encodedAuthPayload) ? null : (encodedAuthPayload.toLowerCase().startsWith("basic ") ? "" : "Basic ") + encodedAuthPayload);
 
         return (FairCall) this;
     }
